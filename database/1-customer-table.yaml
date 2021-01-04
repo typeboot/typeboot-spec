@@ -1,0 +1,65 @@
+---
+kind: SchemaDefinition
+subject:
+  schema: customer
+options:
+  replicas:
+    - datacenter-name: dc1
+      replica: 3
+    - datacenter-name: dc2
+      replica: 1
+
+---
+kind: TableDefinition
+subject:
+  schema: customer
+  table: customers
+options:
+  ttl: 0
+fields:
+  - name: key1
+    description: "some key"
+    tags:
+      - pii
+      - confidential
+  - name: key2
+  - name: key3
+  - name: key4
+    type: date
+  - name: key6
+constraints:
+  - type: primary key
+    fieldNames:
+      - key1
+      - key2
+  - type: clustering key
+    fieldNames:
+      - -key3
+
+---
+kind: ColumnDefinition
+subject:
+  schema: customer
+  table: customers
+fields:
+  - name: key5
+    tags:
+      - restricted
+
+---
+kind: ColumnRenameDefinition
+subject:
+  schema: customer
+  table: customers
+fields:
+  - from: key6
+    to: key7
+
+---
+kind: ColumnRemovalDefinition
+subject:
+  schema: customer
+  table: customers
+fields:
+  - name: key5
+

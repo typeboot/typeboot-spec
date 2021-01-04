@@ -1,0 +1,8 @@
+#provider: cassandra, postgres, mongo
+provider: cassandra
+#strict, compatibility
+mode: "strict"
+#mutations, audit, all
+generate: "all"
+
+source: "./database"
