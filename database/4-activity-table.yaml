@@ -1,0 +1,17 @@
+---
+kind: TableDefinition
+subject:
+  schema: customer
+  table: activity
+fields:
+  - name: key1
+    description: "some key"
+    tags:
+      - pii
+      - confidential
+  - name: key2
+constraints:
+  - type: primary key
+    fieldNames:
+      - key1
+      - key2

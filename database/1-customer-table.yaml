@@ -15,7 +15,10 @@ subject:
   schema: customer
   table: customers
 options:
-  ttl: 0
+  default_time_to_live: 1000
+  gc_grace_seconds: 86400
+  compaction: |
+    {'class': 'TimeWindowCompactionStrategy', 'compaction_window_unit': 'DAYS', 'compaction_window_size': 60, 'split_during_flush': true}
 fields:
   - name: key1
     description: "some key"
@@ -35,6 +38,7 @@ constraints:
   - type: clustering key
     fieldNames:
       - -key3
+      - key4
 
 ---
 kind: ColumnDefinition

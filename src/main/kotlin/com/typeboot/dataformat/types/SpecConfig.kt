@@ -1,20 +1,25 @@
 package com.typeboot.dataformat.types
 
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.regex.Pattern
 
 data class FileScript(val serial: Int, val name: String, val filePath: String)
 
-data class SpecConfig(val provider: String,
+
+class ProviderConfig(val name: String, val options: Map<String, String>?)
+data class SpecConfig(val provider: ProviderConfig,
                       val mode: String,
                       val generate: String,
-                      val source: String) {
-    fun getRenderers(): List<String> {
-        return if (generate == "all") {
+                      val source: String,
+                      val output: String) {
+    fun getGenerators(): List<String> {
+        return (if (generate == "all") {
             "mutations,audit"
         } else {
             generate
-        }.split(",")
+        }).split(",").toList()
     }
 
     private val reg = Pattern.compile("([0-9]+).*\\.yaml")
@@ -42,4 +47,5 @@ data class SpecConfig(val provider: String,
             FileScript(scriptNumber, f.name, f.absolutePath)
         }.sortedBy { fs -> fs.serial }
     }
+
 }

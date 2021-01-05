@@ -9,12 +9,11 @@ class SchemaOptions(val replicas: List<ReplicationConfig>)
 
 data class SchemaDefinition(val kind: String, val subject: Subject, val options: SchemaOptions)
 
-class TableOptions(val ttl: Int)
 class FieldDefinition(val name: String, val type: String?, val description: String?, val tags: List<String>?)
 class ConstraintDefinition(val type: String, val fieldNames: List<String>)
 
 data class TableDefinition(val kind: String, val subject: Subject,
-                           val options: TableOptions,
+                           val options: Map<String, *>?,
                            val fields: List<FieldDefinition>,
                            val constraints: List<ConstraintDefinition>
 )

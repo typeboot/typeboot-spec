@@ -1,8 +1,15 @@
 #provider: cassandra, postgres, mongo
-provider: cassandra
+provider:
+  name: cassandra
+  options:
+    dynamic_schema: "no"
+
 #strict, compatibility
 mode: "strict"
 #mutations, audit, all
 generate: "all"
 
 source: "./database"
+
+#stdout if path is not provided
+output: "output"

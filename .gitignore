@@ -5,6 +5,6 @@ build
 *.ipr
 *.iml
 .DS_Store
+output
 out
-
 
