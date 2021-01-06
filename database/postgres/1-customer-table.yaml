@@ -1,0 +1,99 @@
+---
+kind: SchemaDefinition
+subject:
+  schema: customer
+options:
+  replicas:
+    - datacenter-name: dc1
+      replica: 3
+    - datacenter-name: dc2
+      replica: 1
+
+
+---
+kind: TableDefinition
+subject:
+  schema: customer
+  table: users
+fields:
+  - name: id
+    type: integer
+  - name: email
+  - name: password
+  - name: is_admin
+    type: boolean
+constraints:
+  - type: primary key
+    fieldNames:
+      - id
+
+---
+kind: TableDefinition
+subject:
+  schema: customer
+  table: events
+fields:
+  - name: id
+    type: integer
+    default: 1
+  - name: title
+    constraint:
+    - unique
+    - not null
+  - name: start_time
+    type: time
+  - name: end_time
+    type: time
+  - name: location
+  - name: part_of
+    type: integer
+  - name: created_by
+    type: integer
+constraints:
+  - type: primary key
+    fieldNames:
+      - id
+  - type: foreign key
+    fieldNames:
+      - created_by
+    reference:
+      table: users
+      fieldNames:
+        - id
+
+  - type: unique
+    fieldNames:
+      - title
+
+---
+kind: ColumnDefinition
+subject:
+  schema: customer
+  table: users
+fields:
+  - name: key5
+    tags:
+      - restricted
+  - name: key6
+  - name: col11
+
+---
+kind: ColumnRenameDefinition
+subject:
+  schema: customer
+  table: users
+fields:
+  - from: key6
+    to: key7
+  - from: col11
+    to: col11_value
+
+---
+kind: ColumnRemovalDefinition
+subject:
+  schema: customer
+  table: users
+fields:
+  - name: key5
+  - name: col13
+
