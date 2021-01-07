@@ -12,9 +12,10 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     private fun constructTableFields(tableDefinition: TableDefinition):
             List<String> {
+
         return tableDefinition.fields.map {
             val type = it.type ?: "text"
-            var default = if (it.default != null) " default ${it.default}"
+            val default = if (it.default != null) " default ${it.default}"
             else ""
             val constraint = if (it.constraint != null)
                 it.constraint.joinToString(prefix = " ", separator = " ")
@@ -26,7 +27,13 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     private fun constructConstraintFields(tableDefinition: TableDefinition):
             List<String> {
-        return tableDefinition.constraints.map {
+
+        return tableDefinition.constraints.filter {
+            when (it.type) {
+                "primary key", "foreign key", "unique" -> true
+                else -> false
+            }
+        }.map {
             val fields = when (it.type) {
                 "primary key", "unique" -> it.fieldNames.joinToString(prefix = "(", separator = ", ", postfix = ")")
                 "foreign key" ->
@@ -81,7 +88,6 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     override fun generateColumnRename(columnRenameDefinition: ColumnRenameDefinition): List<Instructions> {
         println("generate column rename")
-        var myInstruction = ""
 //        val table = "${columnRenameDefinition.subject.schema}" +
 //                ".${columnRenameDefinition.subject.table}"
 //        val column = columnRenameDefinition.fields.joinToString(separator = ", ") {
@@ -89,7 +95,8 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 //        }
 //
 //        val myInstruction = "\nALTER TABLE $table $column"
-        return listOf(Instructions(myInstruction))
+//        return listOf(Instructions(myInstruction))
+        return listOf()
     }
 
 //    DROP TABLE [IF EXISTS] table_name
