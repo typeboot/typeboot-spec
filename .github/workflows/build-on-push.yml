@@ -19,7 +19,7 @@ jobs:
       - name: Echo Env
         shell: bash
         run: |
-          echo ${{ secrets.DOCKER_USERNAME }}
+          echo ${{ build.DOCKER_USERNAME }}
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
