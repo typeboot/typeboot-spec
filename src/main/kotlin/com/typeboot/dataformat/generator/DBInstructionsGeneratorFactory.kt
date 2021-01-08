@@ -49,7 +49,7 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
     override fun generateTable(tableDefinition: TableDefinition): List<Instructions> {
         println("generate table ddl")
 
-        val fieldConstraintSep = if (tableDefinition.constraints.isNotEmpty()) ",\n\n"
+        val fieldConstraintSep = if (tableDefinition.constraints.isNotEmpty()) ",\n"
         else ""
         val tableFields = constructTableFields(tableDefinition)
                 .joinToString(separator = ",\n", postfix = fieldConstraintSep)
@@ -88,15 +88,11 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     override fun generateColumnRename(columnRenameDefinition: ColumnRenameDefinition): List<Instructions> {
         println("generate column rename")
-//        val table = "${columnRenameDefinition.subject.schema}" +
-//                ".${columnRenameDefinition.subject.table}"
-//        val column = columnRenameDefinition.fields.joinToString(separator = ", ") {
-//            "RENAME ${it.oldName} to ${it.newName}"
-//        }
-//
-//        val myInstruction = "\nALTER TABLE $table $column"
-//        return listOf(Instructions(myInstruction))
-        return listOf()
+        val table = "${columnRenameDefinition.subject.schema}" +
+                ".${columnRenameDefinition.subject.table}"
+        return columnRenameDefinition.fields.map {
+            Instructions("\nALTER TABLE $table RENAME ${it.from} to ${it.to}")
+        }
     }
 
 //    DROP TABLE [IF EXISTS] table_name
