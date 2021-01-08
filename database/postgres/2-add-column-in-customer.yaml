@@ -1,0 +1,13 @@
+---
+kind: ColumnDefinition
+subject:
+  schema: customer
+  table: customers
+fields:
+  - name: key5
+    tags:
+      - restricted
+  - name: key8
+    tags:
+      - confidential
+

@@ -1,0 +1,5 @@
+---
+kind: TableRemovalDefinition
+subject:
+  schema: customer
+  table: customers
