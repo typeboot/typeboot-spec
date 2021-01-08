@@ -12,7 +12,6 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     private fun constructTableFields(tableDefinition: TableDefinition):
             List<String> {
-
         return tableDefinition.fields.map {
             val type = it.type ?: "text"
             val default = if (it.default != null) " default ${it.default}"
@@ -20,14 +19,12 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
             val constraint = if (it.constraint != null)
                 it.constraint.joinToString(prefix = " ", separator = " ")
             else ""
-
             "${it.name} $type$constraint$default"
         }
     }
 
     private fun constructConstraintFields(tableDefinition: TableDefinition):
             List<String> {
-
         return tableDefinition.constraints.filter {
             when (it.type) {
                 "primary key", "foreign key", "unique" -> true
@@ -48,7 +45,6 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     override fun generateTable(tableDefinition: TableDefinition): List<Instructions> {
         println("generate table ddl")
-
         val fieldConstraintSep = if (tableDefinition.constraints.isNotEmpty()) ",\n"
         else ""
         val tableFields = constructTableFields(tableDefinition)
@@ -57,7 +53,6 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
             .joinToString(prefix = "$tableFields", separator = ",\n", postfix = "\n")
         val myInstruction = "\ncreate table ${tableDefinition.subject.schema}." +
                 "${tableDefinition.subject.table} (\n${constraintsAndFields})"
-
         return listOf(Instructions(myInstruction))
     }
 
