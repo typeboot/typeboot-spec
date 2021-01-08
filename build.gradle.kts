@@ -141,10 +141,17 @@ val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
 }
 
+val fatJar by tasks.registering(Jar::class) {
+  dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+  from(project.configurations["runtimeClasspath"].files.map{  zipTree(it)})
+  from(project.sourceSets["main"].output)
+  archiveClassifier.set("uber")
+}
 
 artifacts {
     add("archives", sourcesJar)
     add("archives", javadocJar)
+    add("archives", fatJar)
 }
 
 publishing {
