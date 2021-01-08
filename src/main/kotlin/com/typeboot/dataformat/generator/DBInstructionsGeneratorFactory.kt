@@ -14,12 +14,11 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
             List<String> {
         return tableDefinition.fields.map {
             val type = it.type ?: "text"
-            val default = if (it.default != null) " default ${it.default}"
-            else ""
-            val constraint = if (it.constraint != null)
-                it.constraint.joinToString(prefix = " ", separator = " ")
-            else ""
+            val default = it.default?.let{d->" default $d"} ?: ""
+            val constraint = it.constraint?.joinToString(prefix = " ", separator = " ") ?: ""
             "${it.name} $type$constraint$default"
+
+
         }
     }
 
