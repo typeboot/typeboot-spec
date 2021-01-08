@@ -45,26 +45,28 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 
     override fun generateTable(tableDefinition: TableDefinition): List<Instructions> {
         println("generate table ddl")
+        val schema = "${tableDefinition.subject.schema}"
+        val table = "${tableDefinition.subject.table}"
         val fieldConstraintSep = if (tableDefinition.constraints.isNotEmpty()) ",\n"
         else ""
         val tableFields = constructTableFields(tableDefinition)
                 .joinToString(separator = ",\n", postfix = fieldConstraintSep)
         val constraintsAndFields = constructConstraintFields(tableDefinition)
             .joinToString(prefix = "$tableFields", separator = ",\n", postfix = "\n")
-        val myInstruction = "\ncreate table ${tableDefinition.subject.schema}." +
-                "${tableDefinition.subject.table} (\n${constraintsAndFields})"
+        val myInstruction = "\ncreate table $schema.$table (\n${constraintsAndFields})"
         return listOf(Instructions(myInstruction))
     }
 
 //    issue two semicolons generated
     override fun generateColumn(columnDefinition: ColumnDefinition): List<Instructions> {
         println("generate column ddl")
-        val table = "${columnDefinition.subject.schema}.${columnDefinition.subject.table}"
+        val schema = "${columnDefinition.subject.schema}"
+        val table = "${columnDefinition.subject.table}"
         val columnAndType = columnDefinition.fields.joinToString(separator = ", ") {
             val type = it.type ?: "text"
             "ADD COLUMN ${it.name} $type"
         }
-        val myInstruction = "\nALTER TABLE $table $columnAndType"
+        val myInstruction = "\nALTER TABLE $schema.$table $columnAndType"
         return listOf(Instructions(myInstruction))
     }
 
@@ -72,21 +74,21 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 //    also allow for an 'if exists'
     override fun generateColumnRemoval(columnRemovalDefinition: ColumnRemovalDefinition): List<Instructions> {
         println("generate column drop")
-        val table = "${columnRemovalDefinition.subject.schema}" +
-                ".${columnRemovalDefinition.subject.table}"
+        val schema = "${columnRemovalDefinition.subject.schema}"
+        val table = "${columnRemovalDefinition.subject.table}"
         val column = columnRemovalDefinition.fields.joinToString(separator = ", ") {
             "DROP COLUMN ${it.name}"
         }
-        val myInstruction = "\nALTER TABLE $table $column"
+        val myInstruction = "\nALTER TABLE $schema.$table $column"
         return listOf(Instructions(myInstruction))
     }
 
     override fun generateColumnRename(columnRenameDefinition: ColumnRenameDefinition): List<Instructions> {
         println("generate column rename")
-        val table = "${columnRenameDefinition.subject.schema}" +
-                ".${columnRenameDefinition.subject.table}"
+        val schema = "${columnRenameDefinition.subject.schema}"
+        val table = "${columnRenameDefinition.subject.table}"
         return columnRenameDefinition.fields.map {
-            Instructions("\nALTER TABLE $table RENAME ${it.from} to ${it.to}")
+            Instructions("\nALTER TABLE $schema.$table RENAME ${it.from} to ${it.to}")
         }
     }
 
@@ -94,9 +96,9 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
 //[CASCADE | RESTRICT];
     override fun generateTableRemoval(tableRemovalDefinition: TableRemovalDefinition): List<Instructions> {
         println("generate table remove")
-        val table = "${tableRemovalDefinition.subject.schema}" +
-                ".${tableRemovalDefinition.subject.table}"
-        val myInstruction = "\nDROP TABLE $table"
+        val schema = "${tableRemovalDefinition.subject.schema}"
+        val table = "${tableRemovalDefinition.subject.table}"
+        val myInstruction = "\nDROP TABLE $schema.$table"
         return listOf(Instructions(myInstruction))
     }
 
