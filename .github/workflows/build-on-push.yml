@@ -15,12 +15,12 @@ jobs:
       - name: Build Gradle
         run: ./gradlew clean build
 
-      - run: "print vars"
+      - run: "echo print vars"
       - name: Echo Env
         shell: bash
         run: |
           echo "docker username ${{ secrets.DOCKER_USERNAME }}"
-      - run: "print complete"    
+      - run: "echo print complete"    
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
