@@ -1,6 +1,6 @@
 package com.typeboot.dataformat.renderer
 
-import com.typeboot.dataformat.types.FileScript
+import com.typeboot.dataformat.scripts.FileScript
 import com.typeboot.dataformat.types.Instructions
 import com.typeboot.dataformat.types.Serialisation
 import java.io.File
