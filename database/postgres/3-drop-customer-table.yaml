@@ -1,3 +1,19 @@
+
+---
+kind: TableDefinition
+subject:
+  schema: customer
+  table: customers
+fields:
+  - name: id
+    type: integer
+  - name: name
+  - name: address
+constraints:
+  - type: primary key
+    fieldNames:
+      - id
+
 ---
 kind: TableRemovalDefinition
 subject:

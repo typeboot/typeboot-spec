@@ -2,12 +2,12 @@
 kind: ColumnDefinition
 subject:
   schema: customer
-  table: users
+  table: activity
 fields:
-  - name: col11
+  - name: key9
     tags:
       - restricted
-  - name: key8
+  - name: key10
     tags:
       - confidential
 

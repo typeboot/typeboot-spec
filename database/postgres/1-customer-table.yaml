@@ -76,6 +76,7 @@ fields:
       - restricted
   - name: key6
   - name: col11
+  - name: col13
 
 ---
 kind: ColumnRenameDefinition
