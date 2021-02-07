@@ -1,0 +1,15 @@
+#provider: cassandra, postgres, mongo
+provider:
+  name: postgres
+  options:
+    dynamic_schema: "no"
+
+#strict, compatibility
+mode: "strict"
+#mutations, audit, all
+generate: "all"
+
+source: "/opt/app/examples/postgres"
+
+#stdout if path is not provided
+output: "/tmp/output"
