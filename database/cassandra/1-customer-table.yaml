@@ -35,8 +35,9 @@ fields:
 constraints:
   - type: primary key
     fieldNames:
-      - key1
-      - key2
+      - (key1, key2)
+      - key3
+      - key4
   - type: clustering key
     fieldNames:
       - -key3
@@ -58,10 +59,10 @@ subject:
   schema: customer
   table: customers
 fields:
-  - from: key6
-    to: key7
-  - from: col11
-    to: col11_value
+  - from: key3
+    to: key3_value
+  - from: key4
+    to: key4_value
 
 ---
 kind: ColumnRemovalDefinition
