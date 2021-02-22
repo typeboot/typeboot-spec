@@ -5,8 +5,6 @@ subject:
 options:
   replicas:
     - datacenter-name: dc1
-      replica: 3
-    - datacenter-name: dc2
       replica: 1
 
 ---

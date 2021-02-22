@@ -8,7 +8,7 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
 
     override fun generateSchema(schemaDefinition: SchemaDefinition): List<Instructions> {
         val replication = schemaDefinition.options.replicas.joinToString(separator = ", ",
-                transform = { r -> "'${r.datacenterName}': ${r.replica}" }
+                transform = { r -> "'${r.datacenterName}': ${r.replica}, 'class': 'NetworkTopologyStrategy'" }
         )
         val schemaData = schemaName(schemaDefinition.subject.schema)
         return listOf(Instructions("create keyspace if not exists $schemaData with replication={$replication}"))
