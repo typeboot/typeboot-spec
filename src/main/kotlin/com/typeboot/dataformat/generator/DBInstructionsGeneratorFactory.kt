@@ -91,8 +91,8 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
         }
     }
 
-//    DROP TABLE [IF EXISTS] table_name
-//[CASCADE | RESTRICT];
+    //DROP TABLE [IF EXISTS] table_name
+    //[CASCADE | RESTRICT];
     override fun generateTableRemoval(tableRemovalDefinition: TableRemovalDefinition): List<Instructions> {
         println("generate table remove")
         val schema = "${tableRemovalDefinition.subject.schema}"
@@ -104,4 +104,5 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
     override fun serialisationProps(): Serialisation {
         return Serialisation("sql", ".sql")
     }
+
 }

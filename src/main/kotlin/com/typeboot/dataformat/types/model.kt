@@ -34,3 +34,7 @@ data class ColumnRemovalDefinition(val kind: String, val subject: Subject, val f
 data class TableRemovalDefinition(val kind: String, val subject: Subject)
 data class ColumnRenameDefinition(val kind: String, val subject: Subject, val fields: List<RenameOption>)
 
+class FieldType(val name: String, val type: String?)
+data class DataTemplateDefinition(val kind: String, val subject: Subject,
+                                  val headers: List<FieldType>,
+                                  val resources: List<String>, val generator: String)

@@ -7,6 +7,7 @@ class GeneratorFactory {
         fun render(intent: String, provider: ProviderConfig): Generator {
             val options = let { provider.options }.orEmpty()
             println("intent $intent, provider: $provider, options: $options")
+
             return when (intent) {
                 "audit" -> DBMetadataGeneratorFactory()
                 else -> when (provider.name) {

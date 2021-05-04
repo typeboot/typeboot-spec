@@ -1,0 +1,21 @@
+---
+kind: DataTemplateDefinition
+subject:
+  schema: customer
+  table: activity
+headers:
+  - name: key1
+  - name: key2
+resources:
+  - 5-activity_data.csv
+  - 6-activity_data_again.csv
+
+generator: |
+    fun map(data: Map<String, Any>):String {
+      val values = data.get("data") as Map<String, Any>
+      val instructions = """
+        insert into ${data.get("schema")}.${data.get("table")}(key1, key2)
+        values('${values.get("key1")}', '${values.get("key2")}')
+      """.trimIndent()
+      return instructions
+    }

@@ -88,4 +88,5 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
     override fun serialisationProps(): Serialisation {
         return Serialisation("cql", ".cql")
     }
+
 }

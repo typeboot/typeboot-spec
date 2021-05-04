@@ -36,4 +36,5 @@ class DBMetadataGeneratorFactory : Generator {
     override fun serialisationProps(): Serialisation {
         return Serialisation("metadata", ".metadata.json")
     }
+
 }

@@ -3,16 +3,36 @@ package com.typeboot.dataformat.scripts
 import java.io.File
 import java.util.regex.Pattern
 
-data class FileScript(val serial: Int, val name: String, val filePath: String)
+data class FileScript(val serial: Int, val name: String, val filePath: String) {
+    fun getParent():String {
+        return File(filePath).parent
+    }
+}
+
+interface ScriptNumberProvider {
+    fun include(name: String): Boolean
+    fun scriptForName(name: String): Int
+}
+
+class DefaultScriptNumberProvider(private val reg: Pattern) : ScriptNumberProvider {
+    override fun include(name: String): Boolean {
+        return reg.matcher(name).matches()
+    }
+
+    override fun scriptForName(name: String): Int {
+        val matcher = reg.matcher(name)
+        matcher.matches()
+        return matcher.toMatchResult().group(1).toInt()
+    }
+}
 
 class FileScripts {
     companion object {
-        private fun pattern(ext: String): Pattern = Pattern.compile("([0-9]+).*\\.$ext")
 
-        fun fromSource(source: String, ext: String): List<FileScript> {
-            val reg = pattern(ext)
+
+        fun fromSource(source: String, scriptNumberProvider: ScriptNumberProvider): List<FileScript> {
             val dataFiles = File(source).walk().filter { f ->
-                f.isFile && reg.matcher(f.name).matches()
+                f.isFile && scriptNumberProvider.include(f.name)
             }.toList()
             val fileCache = mutableMapOf<String, File>()
             val scriptCache = mutableListOf<Int>()
@@ -22,9 +42,7 @@ class FileScripts {
                 } else {
                     fileCache[f.name] = f
                 }
-                val matcher = reg.matcher(f.name)
-                matcher.matches()
-                val scriptNumber = matcher.toMatchResult().group(1).toInt()
+                val scriptNumber = scriptNumberProvider.scriptForName(f.name)
                 if (scriptCache.contains(scriptNumber)) {
                     throw RuntimeException("duplicate script number $scriptNumber in ${f.name} as it already exists.")
                 } else {
