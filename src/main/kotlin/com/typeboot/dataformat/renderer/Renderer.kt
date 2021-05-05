@@ -6,14 +6,14 @@ import com.typeboot.dataformat.types.Serialisation
 import java.io.File
 import java.io.FileOutputStream
 
-class RenderOptions(val path: String, val paddedLength: Int)
+class RenderOptions(val path: String, val paddedLength: Int, val prefix: String)
 
 interface Renderer {
     fun render(fileScript: FileScript, instructions: List<Instructions>, serialisation: Serialisation)
 
     companion object Factory {
         fun create(outputOptions: Map<String, String>?): Renderer {
-            return TextRenderer(outputOptions ?: mapOf("path" to "", "pad" to "0"))
+            return TextRenderer(outputOptions ?: mapOf("path" to "", "pad" to "0", "prefix" to "V"))
         }
     }
 }
@@ -31,8 +31,9 @@ class TextRenderer(private val options: Map<String, String>) : Renderer {
                 effectivePath = path
             }
         }
-        val paddedLength = (options["pad"] ?:"4").toInt()
-        return RenderOptions(effectivePath, paddedLength)
+        val paddedLength = (options["pad"] ?: "4").toInt()
+        val prefix = options["prefix"] ?: ""
+        return RenderOptions(effectivePath, paddedLength, prefix)
     }
 
     override fun render(fileScript: FileScript, instructions: List<Instructions>, serialisation: Serialisation) {
@@ -42,7 +43,7 @@ class TextRenderer(private val options: Map<String, String>) : Renderer {
             val subPathDir = File(this.renderOptions.path + "/" + serialisation.subPath)
             subPathDir.mkdirs()
             val paddedLength = renderOptions.paddedLength
-            FileOutputStream(this.renderOptions.path + "/" + serialisation.subPath + "/" + fileScript.getPaddedFileName(paddedLength) + serialisation.extension)
+            FileOutputStream(this.renderOptions.path + "/" + serialisation.subPath + "/" + fileScript.getPaddedFileName(renderOptions.prefix, paddedLength) + serialisation.extension)
         }
         instructions.forEach { ins ->
             fso.write("${ins.text()};\n".toByteArray())

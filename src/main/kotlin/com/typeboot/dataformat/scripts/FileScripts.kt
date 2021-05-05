@@ -12,9 +12,9 @@ data class FileScript(private val scriptName: ScriptName, val filePath: String) 
         return "${scriptName.serial}${scriptName.name}"
     }
 
-    fun getPaddedFileName(desiredSerialLength: Int): String {
+    fun getPaddedFileName(prefix: String, desiredSerialLength: Int): String {
         val paddedSerial = if (desiredSerialLength > 0) "${scriptName.serial}".padStart(desiredSerialLength, '0') else scriptName.serial
-        return "${paddedSerial}${scriptName.name}"
+        return "${prefix}${paddedSerial}${scriptName.name}"
     }
 
     fun getSerial(): Int {
