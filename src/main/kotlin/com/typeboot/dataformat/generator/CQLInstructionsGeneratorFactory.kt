@@ -7,11 +7,12 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
     private fun schemaName(schema: String): String = if (options["dynamic_schema"] ?: "no" == "yes") "{{keyspace:$schema}}" else schema
 
     override fun generateSchema(schemaDefinition: SchemaDefinition): List<Instructions> {
-        val replication = schemaDefinition.options.replicas.joinToString(separator = ", ",
-                transform = { r -> "'${r.datacenterName}': ${r.replica}, 'class': 'NetworkTopologyStrategy'" }
-        )
+        val replication = schemaDefinition.options.replicas?.let { r ->
+            r.joinToString(separator = ", ", transform = { r -> "{'${r.datacenterName}': ${r.replica}, 'class': 'NetworkTopologyStrategy'}" })
+        } ?: "${schemaDefinition.options.replication}"
+
         val schemaData = schemaName(schemaDefinition.subject.schema)
-        return listOf(Instructions("create keyspace if not exists $schemaData with replication={$replication}"))
+        return listOf(Instructions("create keyspace if not exists $schemaData with replication=$replication"))
     }
 
     override fun generateTable(tableDefinition: TableDefinition): List<Instructions> {
@@ -86,7 +87,8 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
     }
 
     override fun serialisationProps(): Serialisation {
-        return Serialisation("cql", ".cql")
+        val ext = options["ext"] ?: ".cql"
+        return Serialisation("cql", ext)
     }
 
 }

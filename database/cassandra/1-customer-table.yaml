@@ -8,6 +8,13 @@ options:
       replica: 1
 
 ---
+kind: SchemaDefinition
+subject:
+  schema: customer_audit
+options:
+  replication: "{'dc': 1, 'class': 'NetworkTopologyStrategy'}"
+
+---
 kind: TableDefinition
 subject:
   schema: customer

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class Subject(val schema: String, val table: String?)
 class ReplicationConfig(@JsonProperty("datacenter-name") val datacenterName: String, val replica: Int)
 
-class SchemaOptions(val replicas: List<ReplicationConfig>)
+class SchemaOptions(val replicas: List<ReplicationConfig>?, val replication: String?)
 
 data class SchemaDefinition(val kind: String, val subject: Subject, val options: SchemaOptions)
 

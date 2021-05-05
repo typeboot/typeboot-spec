@@ -1,21 +1,16 @@
 package com.typeboot.dataformat.types
 
-import com.typeboot.dataformat.scripts.DefaultScriptNumberProvider
-import com.typeboot.dataformat.scripts.FileScript
-import com.typeboot.dataformat.scripts.FileScripts
-import com.typeboot.dataformat.scripts.ScriptNumberProvider
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
+import com.typeboot.dataformat.scripts.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.regex.Pattern
 
 class ProviderConfig(val name: String, val options: Map<String, String>?)
+
 data class SpecConfig(val provider: ProviderConfig,
                       val mode: String,
                       val generate: String,
                       val source: String,
-                      val output: String) {
+                      val output: Map<String,String>?) {
     fun getGenerators(): List<String> {
         return (if (generate == "all") {
             "mutations,audit"
@@ -25,7 +20,7 @@ data class SpecConfig(val provider: ProviderConfig,
     }
 
     fun getSources(): List<FileScript> {
-        return FileScripts.fromSource(source, DefaultScriptNumberProvider(Pattern.compile("([0-9]+).*\\.yaml")))
+        return FileScripts.fromSource(source, DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9\\.]+)(.*)\\.yaml$")))
     }
 
     fun getTemplates(): List<FileScript> {
@@ -35,8 +30,8 @@ data class SpecConfig(val provider: ProviderConfig,
                 return name.endsWith(".yaml")
             }
 
-            override fun scriptForName(name: String): Int {
-                return incremental.next()
+            override fun scriptForName(name: String): ScriptName {
+                return ScriptName(incremental.next(), name);
             }
         }
         return FileScripts.fromSource("${source}/templates", incNumberProvider)

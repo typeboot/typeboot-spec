@@ -102,7 +102,8 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
     }
 
     override fun serialisationProps(): Serialisation {
-        return Serialisation("sql", ".sql")
+        val ext = options["ext"]?:".sql"
+        return Serialisation("sql", ext)
     }
 
 }

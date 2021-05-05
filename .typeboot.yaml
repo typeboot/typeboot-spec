@@ -3,6 +3,7 @@ provider:
   name: cassandra
   options:
     dynamic_schema: "no"
+    ext: ".cql.j2"
 
 #strict, compatibility
 mode: "strict"
@@ -11,5 +12,9 @@ generate: "all"
 
 source: "./database/cassandra"
 
-#stdout if path is not provided
-output: "output"
+
+output:
+  #stdout if path is not provided
+  path: "output"
+  pad: "4"
+

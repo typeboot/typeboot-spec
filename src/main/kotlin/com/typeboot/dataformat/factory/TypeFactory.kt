@@ -72,11 +72,11 @@ class TypeFactory(name: String = ".typeboot.yaml") {
             }
             dataDefinitionList.forEach { d ->
                 val headerNames = d.headers.map { h -> h.name }
-                val scriptProvider = DefaultScriptNumberProvider(Pattern.compile("([0-9]+).*\\.csv"))
+                val scriptProvider = DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9]+)(.*)\\.csv$"))
                 d.resources.forEach { resource ->
                     val dataFilePath = "${parent}/../data/${resource}"
-                    val scriptNo = scriptProvider.scriptForName(resource)
-                    val dataFileScript = FileScript(scriptNo, resource, dataFilePath)
+                    val scriptName = scriptProvider.scriptForName(resource)
+                    val dataFileScript = FileScript(scriptName, dataFilePath)
                     val instructions = File(dataFilePath).readLines().map { line ->
                         val dataMap = headerNames.zip(csvParser.parseLine(line)).toMap()
                         engine.eval(StringReader(d.generator))
