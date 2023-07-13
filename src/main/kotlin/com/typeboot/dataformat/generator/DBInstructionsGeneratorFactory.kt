@@ -38,7 +38,7 @@ class DBInstructionsGeneratorFactory(private val options: Map<String, String>) :
                                     .reference?.fieldNames?.joinToString(separator = ", ")})"
                 else -> ""
             }
-            "${it.type.toUpperCase()} $fields"
+            "${it.type.uppercase()} $fields"
         }
     }
 

@@ -7,8 +7,8 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
     private fun schemaName(schema: String): String = if (options["dynamic_schema"] ?: "no" == "yes") "{{keyspace:$schema}}" else schema
 
     override fun generateSchema(schemaDefinition: SchemaDefinition): List<Instructions> {
-        val replication = schemaDefinition.options.replicas?.let { r ->
-            r.joinToString(separator = ", ", transform = { r -> "{'${r.datacenterName}': ${r.replica}, 'class': 'NetworkTopologyStrategy'}" })
+        val replication = schemaDefinition.options.replicas?.let { rs ->
+            rs.joinToString(separator = ", ", transform = { r -> "{'${r.datacenterName}': ${r.replica}, 'class': 'NetworkTopologyStrategy'}" })
         } ?: "${schemaDefinition.options.replication}"
 
         val schemaData = schemaName(schemaDefinition.subject.schema)
@@ -21,7 +21,7 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
         val table = tableDefinition.subject.table
         val columns = serialiseColumns(tableDefinition.fields)
 
-        val primaryKey = tableDefinition.constraints.filter { c -> c.type.toLowerCase() == "primary key" }.map { c ->
+        val primaryKey = tableDefinition.constraints.filter { c -> c.type.lowercase() == "primary key" }.map { c ->
             c.fieldNames.joinToString(prefix = "  PRIMARY KEY(", separator = ", ", postfix = ")")
         }.joinToString("")
 
@@ -32,7 +32,7 @@ class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) 
             "${kv.key}=$value"
         }.joinToString(separator = "\n AND ")
 
-        val clustering = tableDefinition.constraints.filter { c -> c.type.toLowerCase() == "clustering key" }.map { c ->
+        val clustering = tableDefinition.constraints.filter { c -> c.type.lowercase() == "clustering key" }.map { c ->
             c.fieldNames.map { keyName ->
                 if (keyName.startsWith("-")) "${keyName.substring(1)} DESC" else "$keyName ASC"
             }.joinToString(prefix = "CLUSTERING ORDER BY(", separator = ", ", transform = { s -> s }, postfix = ")\n")

@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.api.artifacts.maven.MavenDeployment
 import org.gradle.api.tasks.bundling.Jar
 
 buildscript {
@@ -22,10 +21,9 @@ plugins {
     idea
     java
     jacoco
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.9.0"
     id("org.sonarqube") version "2.8"
     id("maven-publish")
-    maven
     signing
 }
 
@@ -34,8 +32,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -48,24 +46,24 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.fasterxml.jackson.core:jackson-core:2.12.3")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
 
-    implementation("com.opencsv:opencsv:5.4")
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.5.0")
+    implementation("com.opencsv:opencsv:5.7.1")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.9.0")
 
-    testImplementation("org.mockito:mockito-core:3.3.3")
+    testImplementation("org.mockito:mockito-core:5.4.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.1")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.3")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.3")
 
-    testImplementation("org.junit.platform:junit-platform-commons:1.6.1")
-    testImplementation("org.junit.platform:junit-platform-runner:1.6.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.6.1")
+    testImplementation("org.junit.platform:junit-platform-commons:1.9.3")
+    testImplementation("org.junit.platform:junit-platform-runner:1.9.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.9.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.9.3")
 }
 
 tasks.test {
@@ -147,6 +145,7 @@ val fatJar by tasks.registering(Jar::class) {
   from(project.configurations["runtimeClasspath"].files.map{  zipTree(it)})
   from(project.sourceSets["main"].output)
   archiveClassifier.set("uber")
+  duplicatesStrategy=DuplicatesStrategy.EXCLUDE
 }
 
 artifacts {
@@ -232,7 +231,7 @@ tasks.withType<Sign>().configureEach {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
