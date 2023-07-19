@@ -12,7 +12,7 @@ class YamlSupport {
     private val factory = YAMLFactory()
 
     init {
-        yamlMapper.registerModule(KotlinModule())
+        yamlMapper.registerModule(KotlinModule.Builder().build())
     }
 
     fun toMap(fileName: String): Map<*, *> {

@@ -1,16 +1,26 @@
 package com.typeboot.dataformat.types
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.typeboot.dataformat.scripts.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.regex.Pattern
 
-class ProviderConfig(val name: String, val options: Map<String, String>?)
+class ProviderConfig @JsonCreator constructor(val name: String, val options: Map<String, String>?)
 
-data class SpecConfig(val provider: ProviderConfig,
-                      val mode: String,
-                      val generate: String,
-                      val source: String,
-                      val output: Map<String,String>?) {
+
+data class OutputOptions @JsonCreator constructor(
+    val path: String = "",
+    val pad: String = "0",
+    val prefix: String = "V"
+)
+
+data class SpecConfig @JsonCreator constructor(
+    val provider: ProviderConfig,
+    val mode: String,
+    val generate: String,
+    val source: String,
+    val output: OutputOptions = OutputOptions()
+) {
     fun getGenerators(): List<String> {
         return (if (generate == "all") {
             "mutations,audit"
@@ -20,7 +30,10 @@ data class SpecConfig(val provider: ProviderConfig,
     }
 
     fun getSources(): List<FileScript> {
-        return FileScripts.fromSource(source, DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9\\.]+)(.*)\\.yaml$")))
+        return FileScripts.fromSource(
+            source,
+            DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9\\.]+)(.*)\\.yaml$"))
+        )
     }
 
     fun getTemplates(): List<FileScript> {

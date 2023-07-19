@@ -17,6 +17,9 @@ buildscript {
     project.version = createBuildVersion("${project.version}")
 }
 
+val jacksonVersion: String by project
+val kotlinVersion: String by project
+
 plugins {
     idea
     java
@@ -46,12 +49,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
+    implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
 
     implementation("com.opencsv:opencsv:5.7.1")
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:$kotlinVersion")
 
     testImplementation("org.mockito:mockito-core:5.4.0")
 
@@ -233,5 +236,11 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
+}
+
+task("testApp", JavaExec::class) {
+    main = "com.typeboot.DdlgenKt"
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = listOf("-Xms512m", "-Xmx512m")
 }
 

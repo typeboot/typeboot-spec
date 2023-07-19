@@ -2,6 +2,7 @@ package com.typeboot.dataformat.renderer
 
 import com.typeboot.dataformat.scripts.FileScript
 import com.typeboot.dataformat.types.Instructions
+import com.typeboot.dataformat.types.OutputOptions
 import com.typeboot.dataformat.types.Serialisation
 import java.io.File
 import java.io.FileOutputStream
@@ -12,17 +13,17 @@ interface Renderer {
     fun render(fileScript: FileScript, instructions: List<Instructions>, serialisation: Serialisation)
 
     companion object Factory {
-        fun create(outputOptions: Map<String, String>?): Renderer {
-            return TextRenderer(outputOptions ?: mapOf("path" to "", "pad" to "0", "prefix" to "V"))
+        fun create(outputOptions: OutputOptions): Renderer {
+            return TextRenderer(outputOptions)
         }
     }
 }
 
-class TextRenderer(private val options: Map<String, String>) : Renderer {
+class TextRenderer(private val options: OutputOptions) : Renderer {
     private val renderOptions: RenderOptions = initRenderOptions()
     private fun initRenderOptions(): RenderOptions {
         var effectivePath = ""
-        options["path"]?.let { path ->
+        options.path.let { path ->
             if (path.isNotEmpty()) {
                 val out = File(path)
                 if (!out.exists()) {
@@ -31,8 +32,8 @@ class TextRenderer(private val options: Map<String, String>) : Renderer {
                 effectivePath = path
             }
         }
-        val paddedLength = (options["pad"] ?: "4").toInt()
-        val prefix = options["prefix"] ?: ""
+        val paddedLength = (options.pad).toInt()
+        val prefix = options.prefix
         return RenderOptions(effectivePath, paddedLength, prefix)
     }
 
