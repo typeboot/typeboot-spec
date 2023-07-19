@@ -13,7 +13,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Build Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build testApp
 
       - run: "echo print vars"
       - name: Echo Env
@@ -35,5 +35,5 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: typeboot/typeboot-spec:0.5
+          tags: typeboot/typeboot-spec:0.6
 
