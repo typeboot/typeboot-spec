@@ -47,7 +47,7 @@ class TextRenderer(private val options: OutputOptions) : Renderer {
             FileOutputStream(this.renderOptions.path + "/" + serialisation.subPath + "/" + fileScript.getPaddedFileName(renderOptions.prefix, paddedLength) + serialisation.extension)
         }
         instructions.forEach { ins ->
-            fso.write("${ins.text()};\n".toByteArray())
+            fso.write("${ins.text().trim()};\n".toByteArray())
             fso.flush()
         }
     }
