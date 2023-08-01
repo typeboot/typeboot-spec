@@ -24,7 +24,7 @@ plugins {
     idea
     java
     jacoco
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.7.0"
     id("org.sonarqube") version "2.8"
     id("maven-publish")
     signing
@@ -47,7 +47,7 @@ configurations {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
@@ -241,6 +241,6 @@ tasks.withType<KotlinCompile> {
 task("testApp", JavaExec::class) {
     main = "com.typeboot.DdlgenKt"
     classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs = listOf("-Xms512m", "-Xmx512m")
+    jvmArgs = listOf("-Xms512m", "-Xmx512m", "--add-exports=com.fasterxml.jackson.annotation/kotlin.text=ALL_UNNAMED")
 }
 

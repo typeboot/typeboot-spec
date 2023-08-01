@@ -7,5 +7,5 @@ then
 else
   args="$TYPEBOOT_SPEC_FILE"
 fi;
-CMD="java -cp /opt/app/libs/typeboot-spec-uber.jar  com.typeboot.DdlgenKt ${args}"
+CMD="java -cp /opt/app/libs/typeboot-spec-uber.jar com.typeboot.DdlgenKt ${args}"
 exec ${CMD}

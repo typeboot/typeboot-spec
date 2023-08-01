@@ -14,7 +14,7 @@ resources:
   - 07-customer-activity.csv
 
 generator: |
-  fun map(args:Map<String,String>):String {
+  fun map(args:Map<String, Any>):String {
     val values = args.get("data") as Map<String, Any>
     val instructions = """
       insert into ${args.get("schema")}.${args.get("table")} (key1, key2, key9, key10) 
