@@ -241,6 +241,6 @@ tasks.withType<KotlinCompile> {
 task("testApp", JavaExec::class) {
     main = "com.typeboot.DdlgenKt"
     classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs = listOf("-Xms512m", "-Xmx512m", "--add-exports=com.fasterxml.jackson.annotation/kotlin.text=ALL_UNNAMED")
+    jvmArgs = listOf("-Xms512m", "-Xmx512m")
 }
 

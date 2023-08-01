@@ -11,11 +11,8 @@ import com.typeboot.dataformat.scripts.FileScript
 import com.typeboot.dataformat.types.*
 import java.io.File
 import java.io.StringReader
-import java.util.function.BiFunction
-import java.util.function.Function
 import java.util.regex.Pattern
 import javax.script.Invocable
-import javax.script.ScriptContext
 import javax.script.ScriptEngineManager
 
 class TypeFactory(name: String = ".typeboot.yaml") {
@@ -24,16 +21,17 @@ class TypeFactory(name: String = ".typeboot.yaml") {
 
     fun generate() {
         val generators = spec.getGenerators()
-        val renderer = Renderer.create(spec.output)
+
         generators.forEach { name ->
             val generator = GeneratorFactory.render(name, spec.provider)
             val serialisation = generator.serialisationProps()
-            generateDml(generator, renderer, serialisation)
-            generateData(renderer, serialisation)
+            val renderer = Renderer.create(spec.output, serialisation)
+            generateDml(generator, renderer)
+            generateData(renderer)
         }
     }
 
-    private fun generateDml(generator: Generator, renderer: Renderer, serialisation: Serialisation) {
+    private fun generateDml(generator: Generator, renderer: Renderer) {
         spec.getSources().forEach { fileScript ->
             val fileName = fileScript.filePath
             val tables = yaml.toList(fileName)
@@ -50,14 +48,14 @@ class TypeFactory(name: String = ".typeboot.yaml") {
                     else -> listOf()
                 }
             }
-            renderer.render(fileScript, ins, serialisation)
+            renderer.render(fileScript, ins)
         }
     }
 
-    private fun generateData(renderer: Renderer, serialisation: Serialisation) {
+    private fun generateData(renderer: Renderer) {
         val csvParser = CSVParser()
         val engine = ScriptEngineManager(javaClass.classLoader).getEngineByExtension("kts")!!
-        val mapFunctionInvocator = engine as? Invocable
+        val mapFunctionInvoker = engine as? Invocable
         spec.getTemplates().forEach { fileScript ->
             val parent = fileScript.getParent()
             val fileName = fileScript.filePath
@@ -73,20 +71,21 @@ class TypeFactory(name: String = ".typeboot.yaml") {
             dataDefinitionList.forEach { d ->
                 val headerNames = d.headers.map { h -> h.name }
                 val scriptProvider = DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9]+)(.*)\\.csv$"))
+                engine.eval(StringReader(d.generator))
                 d.resources.forEach { resource ->
                     val dataFilePath = "${parent}/../data/${resource}"
                     val scriptName = scriptProvider.scriptForName(resource)
                     val dataFileScript = FileScript(scriptName, dataFilePath)
-                    val instructions = File(dataFilePath).readLines().map { line ->
+                    renderer.preRender(dataFileScript)
+                    File(dataFilePath).forEachLine { line ->
                         val dataMap = headerNames.zip(csvParser.parseLine(line)).toMap()
-                        engine.eval(StringReader(d.generator))
-                        val mapResult = mapFunctionInvocator!!.invokeFunction("map", mapOf("schema" to d.subject.schema,
+                        val mapResult = mapFunctionInvoker!!.invokeFunction("map", mapOf("schema" to d.subject.schema,
                                 "table" to d.subject.table!!,
                                 "data" to dataMap
                         ))
-                        Instructions(mapResult.toString())
+                        renderer.renderInstructions(Instructions(mapResult.toString()))
                     }
-                    renderer.render(dataFileScript, instructions, serialisation)
+                    renderer.postRender(fileScript)
                 }
             }
         }
