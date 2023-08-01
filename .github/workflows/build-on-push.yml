@@ -1,6 +1,9 @@
 name: KotlinCI
 
-on: [push]
+on: 
+  push:
+    branches:
+    - main
 
 jobs:
   build:
@@ -35,5 +38,5 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: typeboot/typeboot-spec:0.10
+          tags: typeboot/typeboot-spec:0.11
 
