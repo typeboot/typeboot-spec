@@ -24,6 +24,8 @@ then
     exit 1; 
   fi;
 
+  git fetch --tags --force
+
   current="$(git describe --tags --abbrev=0|sed s/"0\."//g)"
   next=$((current + 1))
 
