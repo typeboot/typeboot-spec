@@ -1,0 +1,8 @@
+- key1: test
+  key2: value
+- key1: one
+  key2: two
+- key1: a
+  key2: b
+- key1: "5"
+  key2: "6"

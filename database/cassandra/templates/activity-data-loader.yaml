@@ -9,6 +9,7 @@ headers:
 resources:
   - 5-activity_data.csv
   - 6-activity_data_again.csv
+  - 7-activity_data.yaml
 
 generator: |
     fun map(data: Map<String, Any>):String {

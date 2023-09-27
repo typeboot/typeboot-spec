@@ -12,6 +12,7 @@ headers:
 resources:
   - 06-customer-activity.csv
   - 07-customer-activity.csv
+  - 08-customer-activity.csv
 
 generator: |
   fun map(args:Map<String, Any>):String {

@@ -1,0 +1,21 @@
+#provider: cassandra, postgres, mongo
+provider:
+  name: cassandra
+  options:
+    dynamic_schema: "no"
+    ext: ".cql.j2"
+
+#strict, compatibility
+mode: "strict"
+#mutations, audit, all
+generate: "all"
+
+source: "./database/cassandra"
+
+
+output:
+  #stdout if path is not provided
+  path: "output"
+  pad: "4"
+  prefix: "V"
+

@@ -38,7 +38,6 @@ class DefaultScriptNumberProvider(private val reg: Pattern) : ScriptNumberProvid
         val matcher = reg.matcher(name)
         matcher.matches()
         val result = matcher.toMatchResult()
-
         return ScriptName(result.group(1).toInt(), result.group(2))
     }
 }
@@ -48,7 +47,7 @@ class FileScripts {
 
         fun fromSource(source: String, scriptNumberProvider: ScriptNumberProvider): List<FileScript> {
             val dataFiles = File(source).walk().filter { f ->
-                f.isFile && scriptNumberProvider.include(f.name)
+                f.parentFile.name != "data" &&  f.isFile && scriptNumberProvider.include(f.name)
             }.toList()
             val fileCache = mutableMapOf<String, File>()
             val scriptCache = mutableListOf<Int>()

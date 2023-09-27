@@ -238,9 +238,20 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-task("testApp", JavaExec::class) {
+task("testCassandra", JavaExec::class) {
     main = "com.typeboot.DdlgenKt"
     classpath = sourceSets["main"].runtimeClasspath
     jvmArgs = listOf("-Xms512m", "-Xmx512m")
+    args = listOf(".cassandra.yaml")
 }
 
+task("testPostgres", JavaExec::class) {
+    main = "com.typeboot.DdlgenKt"
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = listOf("-Xms512m", "-Xmx512m")
+    args = listOf(".typeboot.yaml")
+}
+
+task("testApp") {
+  finalizedBy ("testPostgres", "testCassandra")
+}

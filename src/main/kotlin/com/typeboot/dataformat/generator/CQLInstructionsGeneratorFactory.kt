@@ -4,7 +4,7 @@ import com.typeboot.dataformat.types.*
 
 class CQLInstructionsGeneratorFactory(private val options: Map<String, String>) : Generator {
 
-    private fun schemaName(schema: String): String = if (options["dynamic_schema"] ?: "no" == "yes") "{{keyspace:$schema}}" else schema
+    private fun schemaName(schema: String): String = if ((options["dynamic_schema"] ?: "no") == "yes") "{{keyspace:$schema}}" else schema
 
     override fun generateSchema(schemaDefinition: SchemaDefinition): List<Instructions> {
         val replication = schemaDefinition.options.replicas?.let { rs ->

@@ -52,6 +52,19 @@ class TypeFactory(name: String = ".typeboot.yaml") {
         }
     }
 
+    private fun renderEntry(renderer: Renderer,
+                            d: DataTemplateDefinition,
+                            dataMap: Map<String, Any>,
+                            mapFunctionInvoker: Invocable?) {
+        val mapResult = mapFunctionInvoker!!.invokeFunction(
+            "map", mapOf(
+                "schema" to d.subject.schema,
+                "table" to d.subject.table!!,
+                "data" to dataMap
+            )
+        )
+        renderer.renderInstructions(Instructions(mapResult.toString()))
+    }
     private fun generateData(renderer: Renderer) {
         val csvParser = CSVParser()
         val engine = ScriptEngineManager(javaClass.classLoader).getEngineByExtension("kts")!!
@@ -70,20 +83,29 @@ class TypeFactory(name: String = ".typeboot.yaml") {
             }
             dataDefinitionList.forEach { d ->
                 val headerNames = d.headers.map { h -> h.name }
-                val scriptProvider = DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9]+)(.*)\\.csv$"))
+                val scriptProvider = DefaultScriptNumberProvider(Pattern.compile("^[V]?([0-9]+)(.*)\\.(csv|yaml)$"))
                 engine.eval(StringReader(d.generator))
                 d.resources.forEach { resource ->
                     val dataFilePath = "${parent}/../data/${resource}"
+
                     val scriptName = scriptProvider.scriptForName(resource)
                     val dataFileScript = FileScript(scriptName, dataFilePath)
                     renderer.preRender(dataFileScript)
-                    File(dataFilePath).forEachLine { line ->
-                        val dataMap = headerNames.zip(csvParser.parseLine(line)).toMap()
-                        val mapResult = mapFunctionInvoker!!.invokeFunction("map", mapOf("schema" to d.subject.schema,
-                                "table" to d.subject.table!!,
-                                "data" to dataMap
-                        ))
-                        renderer.renderInstructions(Instructions(mapResult.toString()))
+
+                    if (resource.endsWith("yaml")) {
+                        val dataMapCollection = yaml.toInstance(dataFilePath, List::class.java)
+                        dataMapCollection.forEach { entry ->
+                            (entry as Map<String, Any>).also { dataMap ->
+                                println(dataMap)
+                                renderEntry(renderer, d, dataMap, mapFunctionInvoker)
+                            }
+                        }
+                    } else {
+                        File(dataFilePath).forEachLine { line ->
+                            val dataMap = headerNames.zip(csvParser.parseLine(line)).toMap()
+                            println(dataMap)
+                            renderEntry(renderer, d, dataMap, mapFunctionInvoker)
+                        }
                     }
                     renderer.postRender(fileScript)
                 }
