@@ -38,5 +38,5 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: typeboot/typeboot-spec:0.14
+          tags: typeboot/typeboot-spec:0.15
 

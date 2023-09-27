@@ -10,7 +10,6 @@ then
   exit 1;
 fi;
 
-
 msg="$@"
 
 files=$(git status -s|wc -l)
